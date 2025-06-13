@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeSpecs - Home Specification Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #A0C4FF;
+            --background-color: #F0F4F8;
+            --accent-color: #BDB2FF;
+            --text-color: #2D3748;
+            --text-light: #4A5568;
+            --border-color: #E2E8F0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            box-shadow: var(--shadow);
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: rgba(160, 196, 255, 0.05);
+        }
+
+        .nav-tab:hover {
+            background: rgba(160, 196, 255, 0.1);
+        }
+
+        .content {
+            flex: 1;
+            padding: 2rem 1rem;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-input:disabled {
+            background-color: #F7FAFC;
+            color: var(--text-light);
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .room-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .room-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--primary-color);
+        }
+
+        .room-name {
+            font-weight: 500;
+        }
+
+        .room-input {
+            width: 80px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .room-sqft {
+            font-weight: 600;
+            color: var(--accent-color);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .summary-grid {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #7BA7F7;
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #A69CFF;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--text-light);
+        }
+
+        .btn-text:hover {
+            background: rgba(160, 196, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: #F56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #E53E3E;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            color: var(--border-color);
+        }
+
+        .saved-home-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .saved-home-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .saved-home-checkbox {
+            margin-top: 0.25rem;
+        }
+
+        .saved-home-details {
+            flex: 1;
+        }
+
+        .saved-home-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .saved-home-info {
+            display: grid;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .saved-home-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            background: white;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: #F7FAFC;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table .feature-label {
+            font-weight: 600;
+            background: #F7FAFC;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+        }
+
+        .table .section-header {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .house-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .remove-house {
+            background: none;
+            border: none;
+            color: #F56565;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .room-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .room-input {
+                width: 100%;
+            }
+
+            .saved-home-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">🏠 HomeSpecs</div>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('house-insight')">House Insight</button>
+            <button class="nav-tab" onclick="switchTab('saved-homes')">Saved Homes</button>
+            <button class="nav-tab" onclick="switchTab('comparison')">Comparison</button>
+        </nav>
+
+        <main class="content">
+            <!-- House Insight Screen -->
+            <div id="house-insight" class="screen active">
+                <div class="card">
+                    <h2 class="card-title">Home Details</h2>
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Home Name</label>
+                            <input type="text" id="homeName" class="form-input" placeholder="Enter home name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Price (Lakhs)</label>
+                            <input type="number" id="price" class="form-input" placeholder="50" oninput="calculateAll()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Var</label>
+                            <input type="number" id="totalVar" class="form-input" placeholder="100" oninput="calculateAll()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cut Percentage</label>
+                            <input type="number" id="cutPercentage" class="form-input" placeholder="10" oninput="calculateAll()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Var After Cut %</label>
+                            <input type="text" id="varAfterCut" class="form-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sq ft after cut %</label>
+                            <input type="text" id="sqftAfterCut" class="form-input" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Room Dimensions</h2>
+                    <p style="margin-bottom: 1rem; color: var(--text-light);">Enter length and width (in feet) for each area.</p>
+                    <div id="roomDimensions"></div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h2 class="card-title">Area Summary</h2>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Carpet Area (Sq. Ft.)</span>
+                                <span class="summary-value" id="carpetArea">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Carpet Var</span>
+                                <span class="summary-value" id="carpetVar">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Actual Sq. Ft.</span>
+                                <span class="summary-value" id="actualSqft">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Actual Var</span>
+                                <span class="summary-value" id="actualVar">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Price Analysis</h2>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Price / Carpet Area (Sq. Ft.)</span>
+                                <span class="summary-value" id="priceCarpetArea">₹0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Price / Actual Sq. Ft.</span>
+                                <span class="summary-value" id="priceActualSqft">₹0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Price / Carpet Var</span>
+                                <span class="summary-value" id="priceCarpetVar">₹0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Price / Actual Var</span>
+                                <span class="summary-value" id="priceActualVar">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="calculateAll()">Recalculate</button>
+                    <button class="btn btn-secondary" onclick="saveHome()">Save Home</button>
+                    <button class="btn btn-outline" onclick="addToComparison()">Add to Comparison</button>
+                    <button class="btn btn-text" onclick="resetForm()">Reset Form</button>
+                </div>
+            </div>
+
+            <!-- Saved Homes Screen -->
+            <div id="saved-homes" class="screen">
+                <div id="savedHomesContent"></div>
+            </div>
+
+            <!-- Comparison Screen -->
+            <div id="comparison" class="screen">
+                <div id="comparisonContent"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <script>
+        // Data structures
+        const rooms = [
+            { id: 'balcony', name: 'Balcony', icon: 'eye' },
+            { id: 'drawingRoom', name: 'Drawing Room', icon: 'sofa' },
+            { id: 'kitchen', name: 'Kitchen', icon: 'chef-hat' },
+            { id: 'diningRoom', name: 'Dining Room', icon: 'utensils' },
+            { id: 'masterBedroom1', name: 'Master Bedroom 1', icon: 'bed-double' },
+            { id: 'commonBedroom', name: 'Common Bedroom', icon: 'bed-single' },
+            { id: 'masterBedroom2', name: 'Master Bedroom 2', icon: 'bed-double' },
+            { id: 'mb1Toilet', name: 'MB1 Toilet', icon: 'bath' },
+            { id: 'mb2Toilet', name: 'MB2 Toilet', icon: 'bath' },
+            { id: 'guestToilet', name: 'Guest Toilet', icon: 'bath' },
+            { id: 'washArea', name: 'Wash Area', icon: 'droplets' },
+            { id: 'poojaFoyer', name: 'Pooja/Foyer (PF)', icon: 'home' }
+        ];
+
+        // Database operations (using memory storage)
+        let savedHomes = [];
+        let comparedHouses = [];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRoomDimensions();
+            loadSavedHomes();
+            loadComparedHouses();
+            updateSavedHomesScreen();
+            updateComparisonScreen();
+        });
+
+        function initializeRoomDimensions() {
+            const container = document.getElementById('roomDimensions');
+            container.innerHTML = '';
+
+            rooms.forEach(room => {
+                const roomDiv = document.createElement('div');
+                roomDiv.className = 'room-item';
+                roomDiv.innerHTML = `
+                    <i data-lucide="${room.icon}" class="room-icon"></i>
+                    <span class="room-name">${room.name}</span>
+                    <input type="number" class="room-input" id="length_${room.id}" placeholder="Length" oninput="calculateRoomArea('${room.id}')">
+                    <input type="number" class="room-input" id="width_${room.id}" placeholder="Width" oninput="calculateRoomArea('${room.id}')">
+                    <span class="room-sqft" id="sqft_${room.id}">0</span>
+                `;
+                container.appendChild(roomDiv);
+            });
+
+            // Initialize Lucide icons
+            lucide.createIcons();
+        }
+
+        function calculateRoomArea(roomId) {
+            const length = parseFloat(document.getElementById(`length_${roomId}`).value) || 0;
+            const width = parseFloat(document.getElementById(`width_${roomId}`).value) || 0;
+            const sqft = length * width;
+            document.getElementById(`sqft_${roomId}`).textContent = sqft.toFixed(2);
+            calculateAll();
+        }
+
+        function calculateAll() {
+            // Calculate totals
+            let carpetArea = 0;
+            rooms.forEach(room => {
+                const sqft = parseFloat(document.getElementById(`sqft_${room.id}`).textContent) || 0;
+                carpetArea += sqft;
+            });
+
+            const cutPercentage = parseFloat(document.getElementById('cutPercentage').value) || 0;
+            const totalVar = parseFloat(document.getElementById('totalVar').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+
+            // Calculate derived values
+            const varAfterCut = cutPercentage >= 100 ? 0 : totalVar * (1 - (cutPercentage / 100));
+            const sqftAfterCut = varAfterCut * 9;
+            const carpetVar = carpetArea / 9;
+            const actualSqft = cutPercentage >= 100 ? 0 : carpetArea / (1 - (cutPercentage / 100));
+            const actualVar = actualSqft / 9;
+
+            // Update display
+            document.getElementById('varAfterCut').value = varAfterCut.toFixed(2);
+            document.getElementById('sqftAfterCut').value = sqftAfterCut.toFixed(2);
+            document.getElementById('carpetArea').textContent = carpetArea.toFixed(2);
+            document.getElementById('carpetVar').textContent = carpetVar.toFixed(2);
+            document.getElementById('actualSqft').textContent = actualSqft.toFixed(2);
+            document.getElementById('actualVar').textContent = actualVar.toFixed(2);
+
+            // Price analysis
+            const priceAmount = price * 100000;
+            const priceCarpetArea = carpetArea > 0 ? priceAmount / carpetArea : 0;
+            const priceActualSqft = actualSqft > 0 ? priceAmount / actualSqft : 0;
+            const priceCarpetVar = carpetVar > 0 ? priceAmount / carpetVar : 0;
+            const priceActualVar = actualVar > 0 ? priceAmount / actualVar : 0;
+
+            document.getElementById('priceCarpetArea').textContent = formatCurrency(priceCarpetArea);
+            document.getElementById('priceActualSqft').textContent = formatCurrency(priceActualSqft);
+            document.getElementById('priceCarpetVar').textContent = formatCurrency(priceCarpetVar);
+            document.getElementById('priceActualVar').textContent = formatCurrency(priceActualVar);
+        }
+
+        function formatCurrency(amount) {
+            if (amount === 0) return '₹0';
+            return '₹' + new Intl.NumberFormat('en-IN').format(Math.round(amount));
+        }
+
+        function getCurrentFormData() {
+            const roomData = {};
+            rooms.forEach(room => {
+                roomData[room.id] = {
+                    name: room.name,
+                    length: parseFloat(document.getElementById(`length_${room.id}`).value) || 0,
+                    width: parseFloat(document.getElementById(`width_${room.id}`).value) || 0,
+                    sqft: parseFloat(document.getElementById(`sqft_${room.id}`).textContent) || 0
+                };
+            });
+
+            return {
+                id: Date.now().toString(),
+                homeName: document.getElementById('homeName').value,
+                price: parseFloat(document.getElementById('price').value) || 0,
+                totalVar: parseFloat(document.getElementById('totalVar').value) || 0,
+                cutPercentage: parseFloat(document.getElementById('cutPercentage').value) || 0,
+                varAfterCut: parseFloat(document.getElementById('varAfterCut').value) || 0,
+                sqftAfterCut: parseFloat(document.getElementById('sqftAfterCut').value) || 0,
+                carpetArea: parseFloat(document.getElementById('carpetArea').textContent) || 0,
+                carpetVar: parseFloat(document.getElementById('carpetVar').textContent) || 0,
+                actualSqft: parseFloat(document.getElementById('actualSqft').textContent) || 0,
+                actualVar: parseFloat(document.getElementById('actualVar').textContent) || 0,
+                priceCarpetArea: document.getElementById('priceCarpetArea').textContent,
+                priceActualSqft: document.getElementById('priceActualSqft').textContent,
+                priceCarpetVar: document.getElementById('priceCarpetVar').textContent,
+                priceActualVar: document.getElementById('priceActualVar').textContent,
+                rooms: roomData,
+                createdAt: new Date().toISOString()
+            };
+        }
+
+        function saveHome() {
+            const homeName = document.getElementById('homeName').value.trim();
+            if (!homeName) {
+                showToast('Please enter a home name before saving.');
+                return;
+            }
+
+            const homeData = getCurrentFormData();
+            savedHomes.push(homeData);
+            showToast('Home saved successfully!');
+            updateSavedHomesScreen();
+        }
+
+        function addToComparison() {
+            const homeName = document.getElementById('homeName').value.trim();
+            if (!homeName) {
+                showToast('Please enter a home name before adding to comparison.');
+                return;
+            }
+
+            const homeData = getCurrentFormData();
+            comparedHouses.push(homeData);
+            showToast('Home added to comparison!');
+            updateComparisonScreen();
+        }
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the form? All unsaved data will be lost.')) {
+                document.getElementById('homeName').value = '';
+                document.getElementById('price').value = '';
+                document.getElementById('totalVar').value = '';
+                document.getElementById('cutPercentage').value = '';
+                
+                rooms.forEach(room => {
+                    document.getElementById(`length_${room.id}`).value = '';
+                    document.getElementById(`width_${room.id}`).value = '';
+                    document.getElementById(`sqft_${room.id}`).textContent = '0';
+                });
+                
+                calculateAll();
+                showToast('Form reset successfully!');
+            }
+        }
+
+        function loadHomeData(homeData) {
+            document.getElementById('homeName').value = homeData.homeName;
+            document.getElementById('price').value = homeData.price;
+            document.getElementById('totalVar').value = homeData.totalVar;
+            document.getElementById('cutPercentage').value = homeData.cutPercentage;
+
+            rooms.forEach(room => {
+                if (homeData.rooms[room.id]) {
+                    document.getElementById(`length_${room.id}`).value = homeData.rooms[room.id].length;
+                    document.getElementById(`width_${room.id}`).value = homeData.rooms[room.id].width;
+                    document.getElementById(`sqft_${room.id}`).textContent = homeData.rooms[room.id].sqft.toFixed(2);
+                }
+            });
+
+            calculateAll();
+            switchTab('house-insight');
+            showToast('Home data loaded successfully!');
+        }
+
+        function updateSavedHomesScreen() {
+            const container = document.getElementById('savedHomesContent');
+            
+            if (savedHomes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="home" class="empty-icon"></i>
+                        <h3>No Saved Homes Yet</h3>
+                        <p>Go to House Insight to save a configuration.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="card">
+                        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1rem;">
+                            <h2 class="card-title">Your Saved Home Configurations</h2>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                    <span id="selectAllLabel">Select All (0/${savedHomes.length})</span>
+                                </label>
+                                <button class="btn btn-primary" id="addToComparisonBtn" onclick="addSelectedToComparison()" disabled>
+                                    Add to Comparison
+                                </button>
+                            </div>
+                        </div>
+                        <div id="savedHomesList">
+                            ${savedHomes.map((home, index) => `
+                                <div class="saved-home-card">
+                                    <div class="saved-home-header">
+                                        <input type="checkbox" class="saved-home-checkbox" data-index="${index}" onchange="updateSelectAll()">
+                                        <div class="saved-home-details">
+                                            <div class="saved-home-name">${home.homeName}</div>
+                                            <div class="saved-home-info">
+                                                <div>Price: ₹${(home.price * 100000).toLocaleString('en-IN')}</div>
+                                                <div>Carpet Area: ${home.carpetArea.toFixed(2)} sq. ft.</div>
+                                                <div>Actual Sq. Ft.: ${home.actualSqft.toFixed(2)} sq. ft.</div>
+                                                <div>Total Var: ${home.totalVar}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="saved-home-actions">
+                                        <button class="btn btn-outline" onclick="loadHomeData(savedHomes[${index}])">Load</button>
+                                        <button class="btn btn-danger" onclick="deleteSavedHome(${index})">Delete</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            lucide.createIcons();
+        }
+
+        function updateComparisonScreen() {
+            const container = document.getElementById('comparisonContent');
+            
+            if (comparedHouses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="bar-chart-3" class="empty-icon"></i>
+                        <h3>No Houses for Comparison</h3>
+                        <p>Add from "House Insight" or "Saved Homes".</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 class="card-title">Property Comparison</h2>
+                            <button class="btn btn-danger" onclick="clearAllComparisons()">Clear All Comparisons</button>
+                        </div>
+                        <div class="comparison-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="feature-label">Features</th>
+                                        ${comparedHouses.map((house, index) => `
+                                            <th>
+                                                <div class="house-header">
+                                                    <span>${house.homeName}</span>
+                                                    <button class="remove-house" onclick="removeFromComparison(${index})" title="Remove">
+                                                        <i data-lucide="x"></i>
+                                                    </button>
+                                                </div>
+                                            </th>
+                                        `).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="section-header">
+                                        <td colspan="${comparedHouses.length + 1}">Home Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Price</td>
+                                        ${comparedHouses.map(house => `<td>₹${(house.price * 100000).toLocaleString('en-IN')}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Total Var</td>
+                                        ${comparedHouses.map(house => `<td>${house.totalVar}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Cut %</td>
+                                        ${comparedHouses.map(house => `<td>${house.cutPercentage}%</td>`).join('')}
+                                    </tr>
+                                    <tr class="section-header">
+                                        <td colspan="${comparedHouses.length + 1}">Area Summary</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Carpet Area (Sq. Ft.)</td>
+                                        ${comparedHouses.map(house => `<td>${house.carpetArea.toFixed(2)}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Carpet Var</td>
+                                        ${comparedHouses.map(house => `<td>${house.carpetVar.toFixed(2)}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Actual Sq. Ft.</td>
+                                        ${comparedHouses.map(house => `<td>${house.actualSqft.toFixed(2)}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Actual Var</td>
+                                        ${comparedHouses.map(house => `<td>${house.actualVar.toFixed(2)}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Var After Cut %</td>
+                                        ${comparedHouses.map(house => `<td>${house.varAfterCut.toFixed(2)}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Sq ft after cut %</td>
+                                        ${comparedHouses.map(house => `<td>${house.sqftAfterCut.toFixed(2)}</td>`).join('')}
+                                    </tr>
+                                    <tr class="section-header">
+                                        <td colspan="${comparedHouses.length + 1}">Price Analysis</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Price/Carpet Area (Sq.Ft)</td>
+                                        ${comparedHouses.map(house => `<td>${house.priceCarpetArea}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Price/Actual Sq.Ft</td>
+                                        ${comparedHouses.map(house => `<td>${house.priceActualSqft}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Price/Carpet Var</td>
+                                        ${comparedHouses.map(house => `<td>${house.priceCarpetVar}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="feature-label">Price/Actual Var</td>
+                                        ${comparedHouses.map(house => `<td>${house.priceActualVar}</td>`).join('')}
+                                    </tr>
+                                    <tr class="section-header">
+                                        <td colspan="${comparedHouses.length + 1}">Room Dimensions (Sq. Ft.)</td>
+                                    </tr>
+                                    ${generateRoomComparisonRows()}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.875rem;">
+                            <i data-lucide="info" style="width: 16px; height: 16px; vertical-align: middle;"></i>
+                            Scroll horizontally to see all properties
+                        </p>
+                    </div>
+                `;
+            }
+            
+            lucide.createIcons();
+        }
+
+        function generateRoomComparisonRows() {
+            // Get all unique rooms that have non-zero sqft in at least one house
+            const uniqueRooms = new Set();
+            comparedHouses.forEach(house => {
+                Object.keys(house.rooms).forEach(roomId => {
+                    if (house.rooms[roomId].sqft > 0) {
+                        uniqueRooms.add(roomId);
+                    }
+                });
+            });
+
+            const roomArray = Array.from(uniqueRooms);
+            return roomArray.map(roomId => {
+                const roomName = rooms.find(r => r.id === roomId)?.name || roomId;
+                return `
+                    <tr>
+                        <td class="feature-label">${roomName}</td>
+                        ${comparedHouses.map(house => {
+                            const roomData = house.rooms[roomId];
+                            const sqft = roomData && roomData.sqft > 0 ? roomData.sqft.toFixed(2) : 'N/A';
+                            return `<td>${sqft}</td>`;
+                        }).join('')}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const homeCheckboxes = document.querySelectorAll('.saved-home-checkbox');
+            
+            homeCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectAll();
+        }
+
+        function updateSelectAll() {
+            const homeCheckboxes = document.querySelectorAll('.saved-home-checkbox');
+            const checkedBoxes = document.querySelectorAll('.saved-home-checkbox:checked');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const selectAllLabel = document.getElementById('selectAllLabel');
+            const addToComparisonBtn = document.getElementById('addToComparisonBtn');
+            
+            if (selectAllLabel) {
+                selectAllLabel.textContent = `Select All (${checkedBoxes.length}/${homeCheckboxes.length})`;
+            }
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = checkedBoxes.length === homeCheckboxes.length && homeCheckboxes.length > 0;
+                selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < homeCheckboxes.length;
+            }
+            
+            if (addToComparisonBtn) {
+                addToComparisonBtn.disabled = checkedBoxes.length === 0;
+                addToComparisonBtn.textContent = `Add ${checkedBoxes.length > 0 ? `(${checkedBoxes.length})` : ''} to Comparison`;
+            }
+        }
+
+        function addSelectedToComparison() {
+            const checkedBoxes = document.querySelectorAll('.saved-home-checkbox:checked');
+            const selectedIndices = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.index));
+            
+            selectedIndices.forEach(index => {
+                const homeData = savedHomes[index];
+                // Check if already in comparison
+                const existsInComparison = comparedHouses.some(house => house.id === homeData.id);
+                if (!existsInComparison) {
+                    comparedHouses.push(homeData);
+                }
+            });
+            
+            updateComparisonScreen();
+            switchTab('comparison');
+            showToast(`${selectedIndices.length} home(s) added to comparison!`);
+        }
+
+        function deleteSavedHome(index) {
+            if (confirm('Are you sure you want to delete this saved home?')) {
+                savedHomes.splice(index, 1);
+                updateSavedHomesScreen();
+                showToast('Home deleted successfully!');
+            }
+        }
+
+        function removeFromComparison(index) {
+            comparedHouses.splice(index, 1);
+            updateComparisonScreen();
+            showToast('House removed from comparison!');
+        }
+
+        function clearAllComparisons() {
+            if (confirm('Are you sure you want to clear all comparisons?')) {
+                comparedHouses = [];
+                updateComparisonScreen();
+                showToast('All comparisons cleared!');
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update screens
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update content based on tab
+            if (tabName === 'saved-homes') {
+                updateSavedHomesScreen();
+            } else if (tabName === 'comparison') {
+                updateComparisonScreen();
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function loadSavedHomes() {
+            // In a real app, this would load from localStorage or a database
+            // For demo purposes, we'll start with empty data
+        }
+
+        function loadComparedHouses() {
+            // In a real app, this would load from localStorage or a database
+            // For demo purposes, we'll start with empty data
+        }
+
+        // Initialize calculations on page load
+        window.addEventListener('load', () => {
+            calculateAll();
+        });
+    </script>
+</body>
+</html>
